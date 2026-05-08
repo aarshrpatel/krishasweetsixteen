@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff7f4;
+  --foreground: #1f1320;
+  --primary: #b8456b;
+  --primary-soft: #f7d6e0;
+  --accent: #e8a5b8;
+  --muted: #8a6a78;
+  --card: #ffffff;
+  --border: #f1d9df;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-display);
+}
+
+body {
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(247, 214, 224, 0.6) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(232, 165, 184, 0.35) 0%,
+      transparent 55%
+    ),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: var(--font-display), "Playfair Display", Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Soft confetti dots in the background of the landing page */
+.confetti-bg {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(184, 69, 107, 0.18) 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 32%, rgba(232, 165, 184, 0.5) 0 2px, transparent 3px),
+    radial-gradient(circle at 32% 78%, rgba(184, 69, 107, 0.12) 0 4px, transparent 5px),
+    radial-gradient(circle at 88% 88%, rgba(232, 165, 184, 0.45) 0 2px, transparent 3px),
+    radial-gradient(circle at 5% 60%, rgba(184, 69, 107, 0.15) 0 2px, transparent 3px),
+    radial-gradient(circle at 60% 12%, rgba(232, 165, 184, 0.4) 0 3px, transparent 4px);
+}
