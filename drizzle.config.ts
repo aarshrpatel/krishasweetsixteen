@@ -1,5 +1,9 @@
 import { defineConfig } from "drizzle-kit";
-import "dotenv/config";
+import { config } from "dotenv";
+
+// Load .env.local first (Vercel CLI writes here), falling back to .env.
+config({ path: ".env.local" });
+config({ path: ".env" });
 
 export default defineConfig({
   schema: "./lib/db/schema.ts",
