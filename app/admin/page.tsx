@@ -3,11 +3,8 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { families } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/auth";
-import {
-  clearAllFamiliesAction,
-  deleteFamilyAction,
-  logoutAction,
-} from "./actions";
+import { deleteFamilyAction, logoutAction } from "./actions";
+import { ClearAllButton } from "./ClearAllButton";
 import { UploadCard } from "./UploadCard";
 import { CopyAllInvites, CopyInvite } from "./CopyLink";
 
@@ -87,25 +84,7 @@ export default async function AdminPage() {
           </h2>
           <div className="flex flex-wrap items-center gap-3">
             <CopyAllInvites invites={invites} />
-            {rows.length > 0 && (
-              <form action={clearAllFamiliesAction}>
-                <button
-                  type="submit"
-                  className="text-xs text-rose-600 hover:underline"
-                  onClick={(e) => {
-                    if (
-                      !confirm(
-                        "Delete ALL families and RSVP responses? This cannot be undone.",
-                      )
-                    ) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  Clear all
-                </button>
-              </form>
-            )}
+            {rows.length > 0 && <ClearAllButton />}
           </div>
         </div>
 
