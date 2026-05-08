@@ -9,7 +9,7 @@ import {
   logoutAction,
 } from "./actions";
 import { UploadCard } from "./UploadCard";
-import { CopyLink } from "./CopyLink";
+import { CopyAllInvites, CopyInvite } from "./CopyLink";
 
 export const dynamic = "force-dynamic";
 
@@ -40,19 +40,26 @@ export default async function AdminPage() {
     { invited: 0, yes: 0, no: 0, pending: 0 },
   );
 
+  const invites = rows.map((f) => ({
+    name: f.name,
+    url: `${siteUrl}/rsvp/${f.rsvpToken}`,
+  }));
+
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">
       <header className="flex items-center justify-between">
         <div>
-          <p className="font-display text-xs uppercase tracking-[0.4em] text-[color:var(--primary)]">
+          <p className="font-display text-xs uppercase tracking-[0.4em] text-[color:var(--accent)]">
             Admin
           </p>
-          <h1 className="font-display mt-1 text-3xl">RSVP dashboard</h1>
+          <h1 className="font-display mt-1 text-3xl text-[color:var(--card)]">
+            RSVP dashboard
+          </h1>
         </div>
         <form action={logoutAction}>
           <button
             type="submit"
-            className="text-sm text-[color:var(--muted)] hover:text-[color:var(--primary)]"
+            className="text-sm text-[color:var(--muted-on-bg)] hover:text-[color:var(--primary)]"
           >
             Sign out
           </button>
@@ -70,97 +77,105 @@ export default async function AdminPage() {
         <UploadCard />
       </div>
 
-      <section className="mt-8 rounded-2xl border border-[color:var(--border)] bg-white/80 p-6 shadow-sm">
-        <div className="flex items-center justify-between">
+      <section className="mt-8 rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-6 text-[color:var(--foreground)] shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-xl">
-            Families{" "}
+            Invitations{" "}
             <span className="text-sm text-[color:var(--muted)]">
               ({rows.length})
             </span>
           </h2>
-          {rows.length > 0 && (
-            <form action={clearAllFamiliesAction}>
-              <button
-                type="submit"
-                className="text-xs text-rose-600 hover:underline"
-                onClick={(e) => {
-                  if (
-                    !confirm(
-                      "Delete ALL families and RSVP responses? This cannot be undone.",
-                    )
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                Clear all
-              </button>
-            </form>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <CopyAllInvites invites={invites} />
+            {rows.length > 0 && (
+              <form action={clearAllFamiliesAction}>
+                <button
+                  type="submit"
+                  className="text-xs text-rose-600 hover:underline"
+                  onClick={(e) => {
+                    if (
+                      !confirm(
+                        "Delete ALL families and RSVP responses? This cannot be undone.",
+                      )
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  Clear all
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {rows.length === 0 ? (
           <p className="mt-6 text-sm text-[color:var(--muted)]">
-            No families yet. Upload your guest list above to get started.
+            No invitations yet. Upload your guest list above to get started.
           </p>
         ) : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-xs uppercase tracking-wider text-[color:var(--muted)]">
-                <tr>
-                  <th className="py-2 pr-3">Family</th>
-                  <th className="py-2 pr-3">Status</th>
-                  <th className="py-2 pr-3">Attending</th>
-                  <th className="py-2 pr-3">Notes</th>
-                  <th className="py-2 pr-3">Link</th>
-                  <th className="py-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((f) => {
-                  const url = `${siteUrl}/rsvp/${f.rsvpToken}`;
-                  return (
-                    <tr
-                      key={f.id}
-                      className="border-t border-[color:var(--border)] align-top"
-                    >
-                      <td className="py-3 pr-3">
-                        <div className="font-medium">{f.name}</div>
-                        <div className="text-xs text-[color:var(--muted)]">
-                          {f.email ?? f.phone ?? "—"}
-                        </div>
-                      </td>
-                      <td className="py-3 pr-3">
-                        <StatusPill status={f.status} />
-                      </td>
-                      <td className="py-3 pr-3 whitespace-nowrap">
-                        {f.status === "yes"
-                          ? `${f.confirmedAttendees ?? 0} / ${f.maxAttendees}`
-                          : `— / ${f.maxAttendees}`}
-                      </td>
-                      <td className="py-3 pr-3 max-w-[18rem] text-xs text-[color:var(--muted)]">
-                        {f.notes ?? ""}
-                      </td>
-                      <td className="py-3 pr-3">
-                        <CopyLink url={url} />
-                      </td>
-                      <td className="py-3">
-                        <form action={deleteFamilyAction}>
-                          <input type="hidden" name="id" value={f.id} />
-                          <button
-                            type="submit"
-                            className="text-xs text-rose-600 hover:underline"
-                          >
-                            Delete
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <p className="mt-2 text-xs text-[color:var(--muted)]">
+              Tap <span className="font-semibold">Copy invite</span> to copy a
+              ready-to-send message for that person, then paste it into
+              WhatsApp / Messages / etc.
+            </p>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs uppercase tracking-wider text-[color:var(--muted)]">
+                  <tr>
+                    <th className="py-2 pr-3">Name</th>
+                    <th className="py-2 pr-3">Status</th>
+                    <th className="py-2 pr-3">Attending</th>
+                    <th className="py-2 pr-3">Invite</th>
+                    <th className="py-2"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((f) => {
+                    const url = `${siteUrl}/rsvp/${f.rsvpToken}`;
+                    return (
+                      <tr
+                        key={f.id}
+                        className="border-t border-[color:var(--card-border)] align-top"
+                      >
+                        <td className="py-3 pr-3">
+                          <div className="font-medium">{f.name}</div>
+                          {(f.email || f.phone) && (
+                            <div className="text-xs text-[color:var(--muted)]">
+                              {f.email ?? f.phone}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3 pr-3">
+                          <StatusPill status={f.status} />
+                        </td>
+                        <td className="py-3 pr-3 whitespace-nowrap">
+                          {f.status === "yes"
+                            ? `${f.confirmedAttendees ?? 0} / ${f.maxAttendees}`
+                            : `— / ${f.maxAttendees}`}
+                        </td>
+                        <td className="py-3 pr-3">
+                          <CopyInvite name={f.name} url={url} />
+                        </td>
+                        <td className="py-3">
+                          <form action={deleteFamilyAction}>
+                            <input type="hidden" name="id" value={f.id} />
+                            <button
+                              type="submit"
+                              className="text-xs text-rose-600 hover:underline"
+                            >
+                              Delete
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </section>
     </main>
@@ -179,10 +194,10 @@ function Stat({
   return (
     <div
       className={
-        "rounded-2xl border p-4 " +
+        "rounded-2xl border p-4 text-[color:var(--foreground)] shadow-sm " +
         (accent
-          ? "border-[color:var(--primary-soft)] bg-[color:var(--primary-soft)]/40"
-          : "border-[color:var(--border)] bg-white/80")
+          ? "border-[color:var(--primary)] bg-[color:var(--primary-soft)]"
+          : "border-[color:var(--card-border)] bg-[color:var(--card)]")
       }
     >
       <div className="text-xs uppercase tracking-widest text-[color:var(--muted)]">

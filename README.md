@@ -2,13 +2,13 @@
 
 A small, free-to-host RSVP site:
 
-- 📥 Upload an Excel sheet of invited families
-- 🔗 Each family gets a unique RSVP link
-- ✅ Families say yes/no (and how many will attend)
-- 📧 You get an email per response
+- 📥 Upload an Excel sheet of invited people
+- 🔗 Each person gets a unique RSVP link
+- 📋 One tap copies a ready-to-send invite message — you forward it via WhatsApp / text
+- ✅ Guests reply yes/no (and how many will attend); the dashboard updates live
 
 **Stack:** Next.js 16 (App Router) · Vercel (Hobby, free) · Neon Postgres
-(free) · Resend (free, 100 emails/day) · Drizzle ORM · SheetJS · Tailwind v4.
+(free) · Drizzle ORM · SheetJS · Tailwind v4.
 
 ---
 
@@ -35,30 +35,16 @@ Vercel will provision a free Neon Postgres database and automatically
 populate `DATABASE_URL` (and a few other Postgres env vars) into your
 project's environment.
 
-### 4. Add the email provider (Resend, free)
+### 4. Add the remaining env vars
 
-1. Sign up at <https://resend.com>.
-2. Get an API key from **API Keys**.
-3. To send from your own address, add a domain under **Domains** and
-   verify it. For testing without a domain, use the built-in
-   `onboarding@resend.dev` sender (it can only send to *your* verified
-   email, which is perfect for this use case).
-4. In the Vercel project → **Settings → Environment Variables**, add:
-   - `RESEND_API_KEY` — the key you just created
-   - `NOTIFICATION_FROM` — e.g. `Krisha RSVP <onboarding@resend.dev>` or
-     `RSVP <rsvp@yourdomain.com>` if you verified a domain
-   - `NOTIFICATION_TO` — the inbox you want responses to land in
-
-### 5. Add the remaining env vars
-
-Still in **Settings → Environment Variables**, add:
+In **Settings → Environment Variables**, add:
 
 - `ADMIN_PASSWORD` — pick anything; this is the password for the admin page
 - `ADMIN_SECRET` — any long random string (e.g. `openssl rand -hex 32`)
 - `NEXT_PUBLIC_SITE_URL` — your Vercel URL (e.g.
   `https://krishasweetsixteen.vercel.app`)
 
-### 6. Push the database schema
+### 5. Push the database schema
 
 From your local machine, with `DATABASE_URL` from Vercel pulled into
 `.env.local` (`npx vercel env pull .env.local`):
@@ -70,7 +56,7 @@ npm run db:push
 
 This creates the `families` table on Neon.
 
-### 7. Redeploy
+### 6. Redeploy
 
 In Vercel, **Deployments → … → Redeploy** the latest deploy. The site is
 now live.
@@ -83,22 +69,26 @@ now live.
    `ADMIN_PASSWORD`.
 2. Upload an Excel (`.xlsx`) file. Required columns:
 
-   | Family Name        | People |
-   | ------------------ | ------ |
-   | Patel — Mehul fam. | 4      |
-   | Shah — Ravi fam.   | 2      |
+   | First Name | People |
+   | ---------- | ------ |
+   | Mehul      | 4      |
+   | Ravi       | 2      |
 
-   Optional columns: `Email`, `Phone`. Column names are case-insensitive
-   and several variants are accepted (`Family`, `Number of People`,
-   `Attendees`, etc.).
+   Use the first name of whoever you'd like the invitation greeting
+   addressed to. Column names are case-insensitive and several variants
+   are accepted (`Name`, `Family Name`, `Number of People`, `Attendees`,
+   etc.).
 
-3. The dashboard shows each family with a **Copy link** button — that's
-   the personal RSVP URL (`/rsvp/<token>`) to send to them via text /
-   email / WhatsApp.
-4. When a family clicks their link and submits, you get an email and the
-   dashboard updates.
+3. After upload, each row in the dashboard has a **Copy invite** button.
+   Tap it → a personalized message ("Hi Mehul! You're invited to Krisha's
+   Sweet Sixteen 🥂 Please RSVP here: …") is copied to your clipboard.
+   Paste it into WhatsApp / Messages / iMessage / etc.
+4. There's also a **Copy all invites** button that copies one block per
+   guest separated by `---` — useful for bulk reviewing.
+5. When someone opens their link and submits, the dashboard updates live
+   (totals at the top + per-row status).
 
-Families can revisit their link to change their answer at any time.
+Guests can revisit their link to change their answer at any time.
 
 ---
 
@@ -117,9 +107,6 @@ For local development you can either:
 - spin up a separate free Neon project at <https://neon.tech> just for
   development and use that connection string.
 
-To skip emails during local testing, leave `RESEND_API_KEY` blank — RSVPs
-will still save and a warning will be logged.
-
 ---
 
 ## Project layout
@@ -128,17 +115,17 @@ will still save and a warning will be logged.
 app/
   page.tsx                   landing
   admin/                     owner dashboard (password-gated)
-    page.tsx                 stats + family table
+    page.tsx                 stats + invitations table
     actions.ts               upload / delete / clear / logout server actions
-    UploadCard.tsx, CopyLink.tsx
+    UploadCard.tsx           Excel upload form
+    CopyLink.tsx             CopyInvite + CopyAllInvites client buttons
     login/                   password form
-  rsvp/[token]/              public per-family RSVP form
+  rsvp/[token]/              public per-guest RSVP form
     page.tsx, RsvpForm.tsx, actions.ts
 lib/
   db/                        Drizzle schema + client (Neon HTTP)
   auth.ts                    HMAC-signed cookie session
   excel.ts                   SheetJS parser, lenient column matching
-  email.ts                   Resend client
 drizzle.config.ts
 ```
 

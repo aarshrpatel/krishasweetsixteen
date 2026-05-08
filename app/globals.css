@@ -1,14 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fff7f4;
-  --foreground: #1f1320;
-  --primary: #b8456b;
-  --primary-soft: #f7d6e0;
-  --accent: #e8a5b8;
-  --muted: #8a6a78;
-  --card: #ffffff;
-  --border: #f1d9df;
+  /* Royal navy + champagne gold palette */
+  --background: #0c1c40;
+  --background-deep: #081632;
+  --foreground: #1a1a1a; /* dark text used inside cream cards */
+  --on-bg: #f7e7c1; /* default body-level (on navy) text */
+  --primary: #d4ad4d; /* champagne gold */
+  --primary-soft: #f0dca0; /* pale gold, used for accent backgrounds */
+  --accent: #e8c873; /* lighter gold, dividers / highlights */
+  --muted: #6b5b48; /* warm brown for secondary text on cream cards */
+  --muted-on-bg: #c2b390; /* faded gold-cream for secondary text on navy */
+  --card: #faf3e1; /* cream — invitation paper */
+  --card-strong: #fffaf0; /* lighter cream for stat tiles */
+  --border: #2a3a6a; /* navy-blue subtle border on body */
+  --card-border: #d9c388; /* gold-tinted border for cards */
 }
 
 @theme inline {
@@ -28,16 +34,16 @@ body {
   background:
     radial-gradient(
       ellipse at top,
-      rgba(247, 214, 224, 0.6) 0%,
-      transparent 60%
+      rgba(212, 173, 77, 0.18) 0%,
+      transparent 55%
     ),
     radial-gradient(
       ellipse at bottom right,
-      rgba(232, 165, 184, 0.35) 0%,
-      transparent 55%
+      rgba(232, 200, 115, 0.12) 0%,
+      transparent 60%
     ),
-    var(--background);
-  color: var(--foreground);
+    linear-gradient(180deg, var(--background) 0%, var(--background-deep) 100%);
+  color: var(--on-bg);
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
   min-height: 100vh;
 }
@@ -47,13 +53,13 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Soft confetti dots in the background of the landing page */
+/* Soft confetti dots in the background of the landing / RSVP page */
 .confetti-bg {
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(184, 69, 107, 0.18) 0 3px, transparent 4px),
-    radial-gradient(circle at 78% 32%, rgba(232, 165, 184, 0.5) 0 2px, transparent 3px),
-    radial-gradient(circle at 32% 78%, rgba(184, 69, 107, 0.12) 0 4px, transparent 5px),
-    radial-gradient(circle at 88% 88%, rgba(232, 165, 184, 0.45) 0 2px, transparent 3px),
-    radial-gradient(circle at 5% 60%, rgba(184, 69, 107, 0.15) 0 2px, transparent 3px),
-    radial-gradient(circle at 60% 12%, rgba(232, 165, 184, 0.4) 0 3px, transparent 4px);
+    radial-gradient(circle at 12% 18%, rgba(232, 200, 115, 0.45) 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 32%, rgba(247, 231, 193, 0.35) 0 2px, transparent 3px),
+    radial-gradient(circle at 32% 78%, rgba(232, 200, 115, 0.30) 0 4px, transparent 5px),
+    radial-gradient(circle at 88% 88%, rgba(247, 231, 193, 0.30) 0 2px, transparent 3px),
+    radial-gradient(circle at 5% 60%, rgba(212, 173, 77, 0.45) 0 2px, transparent 3px),
+    radial-gradient(circle at 60% 12%, rgba(232, 200, 115, 0.35) 0 3px, transparent 4px);
 }

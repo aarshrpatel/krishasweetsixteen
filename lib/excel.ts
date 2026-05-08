@@ -30,11 +30,13 @@ export function parseFamilies(buffer: ArrayBuffer): ParsedFamily[] {
   return rows.map((row, i) => {
     const lineNo = i + 2; // header is row 1
     const nameRaw = pick(row, [
+      "First Name",
+      "Firstname",
+      "First",
+      "Name",
       "Family Name",
       "Family",
-      "Name",
       "family_name",
-      "Last Name",
     ]);
     const peopleRaw = pick(row, [
       "People",
@@ -51,7 +53,7 @@ export function parseFamilies(buffer: ArrayBuffer): ParsedFamily[] {
     const name = String(nameRaw ?? "").trim();
     const maxAttendees = Number(peopleRaw);
 
-    if (!name) throw new Error(`Row ${lineNo}: missing family name`);
+    if (!name) throw new Error(`Row ${lineNo}: missing first name`);
     if (!Number.isFinite(maxAttendees) || maxAttendees < 1) {
       throw new Error(
         `Row ${lineNo} (${name}): missing or invalid number of people`,

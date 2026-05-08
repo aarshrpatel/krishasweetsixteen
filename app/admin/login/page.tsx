@@ -10,7 +10,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="h-11 rounded-full bg-[color:var(--primary)] px-6 font-medium text-white transition hover:opacity-90 disabled:opacity-60"
+      className="h-11 rounded-full bg-[color:var(--primary)] px-6 font-semibold text-[color:var(--background)] transition hover:opacity-90 disabled:opacity-60"
     >
       {pending ? "Signing in…" : "Sign in"}
     </button>
@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
     <main className="flex flex-1 items-center justify-center px-6 py-16">
       <form
         action={formAction}
-        className="w-full max-w-sm rounded-2xl border border-[color:var(--border)] bg-white/80 p-8 shadow-sm"
+        className="w-full max-w-sm rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-8 text-[color:var(--foreground)] shadow-lg"
       >
         <h1 className="font-display text-2xl">Admin sign-in</h1>
         <p className="mt-1 text-sm text-[color:var(--muted)]">
@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
             type="password"
             autoComplete="current-password"
             required
-            className="mt-2 w-full rounded-md border border-[color:var(--border)] bg-white p-3 outline-none focus:border-[color:var(--primary)]"
+            className="mt-2 w-full rounded-md border border-[color:var(--card-border)] bg-white p-3 outline-none focus:border-[color:var(--primary)]"
           />
         </label>
         {state?.error && (

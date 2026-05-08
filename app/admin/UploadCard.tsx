@@ -10,7 +10,7 @@ function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="h-10 rounded-full bg-[color:var(--primary)] px-5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-60"
+      className="h-10 rounded-full bg-[color:var(--primary)] px-5 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90 disabled:opacity-60"
     >
       {pending ? "Uploading…" : "Upload"}
     </button>
@@ -25,23 +25,23 @@ export function UploadCard() {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <section className="rounded-2xl border border-[color:var(--border)] bg-white/80 p-6 shadow-sm">
+    <section className="rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-6 text-[color:var(--foreground)] shadow-sm">
       <h2 className="font-display text-xl">Upload guest list</h2>
       <p className="mt-1 text-sm text-[color:var(--muted)]">
         Excel (.xlsx) with columns:{" "}
-        <code className="rounded bg-[color:var(--primary-soft)]/40 px-1">
-          Family Name
+        <code className="rounded bg-[color:var(--primary-soft)] px-1 text-[color:var(--foreground)]">
+          First Name
         </code>{" "}
         ·{" "}
-        <code className="rounded bg-[color:var(--primary-soft)]/40 px-1">
+        <code className="rounded bg-[color:var(--primary-soft)] px-1 text-[color:var(--foreground)]">
           People
         </code>{" "}
         · optional{" "}
-        <code className="rounded bg-[color:var(--primary-soft)]/40 px-1">
+        <code className="rounded bg-[color:var(--primary-soft)] px-1 text-[color:var(--foreground)]">
           Email
         </code>
         ,{" "}
-        <code className="rounded bg-[color:var(--primary-soft)]/40 px-1">
+        <code className="rounded bg-[color:var(--primary-soft)] px-1 text-[color:var(--foreground)]">
           Phone
         </code>
         .
@@ -59,7 +59,7 @@ export function UploadCard() {
           name="file"
           accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
           required
-          className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[color:var(--primary-soft)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-[color:var(--primary)] hover:file:opacity-80"
+          className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[color:var(--primary-soft)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[color:var(--foreground)] hover:file:opacity-80"
         />
         <Submit />
       </form>
@@ -68,7 +68,9 @@ export function UploadCard() {
       )}
       {state?.uploaded ? (
         <p className="mt-3 text-sm text-emerald-700">
-          Added {state.uploaded} {state.uploaded === 1 ? "family" : "families"}.
+          Added {state.uploaded} {state.uploaded === 1 ? "person" : "people"}.
+          Scroll down — tap <span className="font-semibold">Copy all invites</span>{" "}
+          to grab personalized messages for each one.
         </p>
       ) : null}
     </section>

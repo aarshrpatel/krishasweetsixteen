@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { families } from "@/lib/db/schema";
@@ -21,19 +22,29 @@ export default async function RsvpPage({
   if (!family) notFound();
 
   return (
-    <main className="confetti-bg flex flex-1 items-center justify-center px-6 py-12">
+    <main className="confetti-bg flex flex-1 justify-center px-5 py-8">
       <div className="w-full max-w-md">
         <div className="text-center">
+          <div className="relative mx-auto aspect-[2/3] w-48 overflow-hidden rounded-[3rem] border-2 border-[color:var(--primary)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] sm:w-56">
+            <Image
+              src="/krisha.jpg"
+              alt="Krisha"
+              fill
+              priority
+              sizes="(max-width: 640px) 12rem, 14rem"
+              className="object-cover"
+            />
+          </div>
           <p
             id="rsvp-heading"
-            className="font-display text-xs uppercase tracking-[0.4em] text-[color:var(--primary)]"
+            className="font-display mt-6 text-xs uppercase tracking-[0.4em] text-[color:var(--accent)]"
           >
             You&apos;re invited
           </p>
-          <h1 className="font-display mt-3 text-4xl text-[color:var(--foreground)]">
+          <h1 className="font-display mt-2 text-3xl text-[color:var(--card)] sm:text-4xl">
             Krisha&apos;s Sweet Sixteen
           </h1>
-          <p className="mt-2 text-sm text-[color:var(--muted)]">
+          <p className="mt-2 text-sm text-[color:var(--muted-on-bg)]">
             Please let us know if you&apos;ll join the celebration.
           </p>
         </div>
@@ -43,7 +54,6 @@ export default async function RsvpPage({
           maxAttendees={family.maxAttendees}
           initialStatus={family.status}
           initialAttendees={family.confirmedAttendees}
-          initialNotes={family.notes}
         />
       </div>
     </main>

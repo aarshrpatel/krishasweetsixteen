@@ -10,7 +10,6 @@ type Props = {
   maxAttendees: number;
   initialStatus: "pending" | "yes" | "no";
   initialAttendees: number | null;
-  initialNotes: string | null;
 };
 
 function SubmitButton({ choice }: { choice: "yes" | "no" }) {
@@ -23,11 +22,15 @@ function SubmitButton({ choice }: { choice: "yes" | "no" }) {
       disabled={pending}
       className={
         choice === "yes"
-          ? "h-12 flex-1 rounded-full bg-[color:var(--primary)] font-medium text-white shadow-sm transition hover:opacity-90 disabled:opacity-60"
-          : "h-12 flex-1 rounded-full border border-[color:var(--border)] bg-white font-medium text-[color:var(--muted)] transition hover:border-[color:var(--primary)] hover:text-[color:var(--primary)] disabled:opacity-60"
+          ? "h-14 flex-1 rounded-full bg-[color:var(--primary)] text-base font-semibold text-[color:var(--background)] shadow-sm transition active:opacity-90 disabled:opacity-60"
+          : "h-14 flex-1 rounded-full border border-[color:var(--card-border)] bg-[color:var(--card)] text-base font-medium text-[color:var(--foreground)] transition active:border-[color:var(--primary)] active:text-[color:var(--primary)] disabled:opacity-60"
       }
     >
-      {pending ? "Sending…" : choice === "yes" ? "Yes, we'll be there" : "Sorry, can't make it"}
+      {pending
+        ? "Sending…"
+        : choice === "yes"
+          ? "Yes, we'll be there"
+          : "Sorry, can't make it"}
     </button>
   );
 }
@@ -38,7 +41,6 @@ export function RsvpForm({
   maxAttendees,
   initialStatus,
   initialAttendees,
-  initialNotes,
 }: Props) {
   const [state, formAction] = useActionState<RsvpResult | null, FormData>(
     submitRsvpAction,
@@ -54,37 +56,31 @@ export function RsvpForm({
   return (
     <form
       action={formAction}
-      className="mt-8 flex flex-col gap-5"
+      className="mt-6 flex flex-col gap-4"
       aria-labelledby="rsvp-heading"
     >
       <input type="hidden" name="token" value={token} />
 
-      <div className="rounded-2xl border border-[color:var(--border)] bg-white/70 p-5">
+      <div className="rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-5 text-[color:var(--foreground)] shadow-sm">
         <p className="text-xs uppercase tracking-widest text-[color:var(--muted)]">
-          Welcome
+          Hello
         </p>
-        <p className="font-display mt-1 text-2xl text-[color:var(--foreground)]">
-          {familyName}
-        </p>
-        <p className="mt-1 text-sm text-[color:var(--muted)]">
-          We have you down for up to{" "}
-          <span className="font-semibold text-[color:var(--foreground)]">
-            {maxAttendees}
-          </span>{" "}
-          {maxAttendees === 1 ? "guest" : "guests"}.
+        <p className="font-display mt-1 text-2xl">{familyName}!</p>
+        <p className="mt-2 text-sm text-[color:var(--muted)]">
+          {maxAttendees === 1
+            ? "We've reserved a spot just for you."
+            : `We've reserved ${maxAttendees} spots for you and your family.`}
         </p>
       </div>
 
       {maxAttendees > 1 && (
-        <label className="flex items-center justify-between rounded-2xl border border-[color:var(--border)] bg-white/70 p-5">
-          <span className="text-sm text-[color:var(--foreground)]">
-            How many will attend?
-          </span>
+        <div className="flex items-center justify-between rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-5 text-[color:var(--foreground)] shadow-sm">
+          <span className="text-base">How many will attend?</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setAttendees((n) => Math.max(1, n - 1))}
-              className="h-9 w-9 rounded-full border border-[color:var(--border)] text-lg text-[color:var(--muted)] hover:bg-[color:var(--primary-soft)]"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--card-border)] text-2xl text-[color:var(--muted)] active:bg-[color:var(--primary-soft)]"
               aria-label="Decrease attendees"
             >
               −
@@ -92,6 +88,7 @@ export function RsvpForm({
             <input
               name="attendees"
               type="number"
+              inputMode="numeric"
               min={1}
               max={maxAttendees}
               value={attendees}
@@ -100,48 +97,37 @@ export function RsvpForm({
                 if (!Number.isNaN(v))
                   setAttendees(Math.max(1, Math.min(maxAttendees, v)));
               }}
-              className="w-12 rounded-md border border-[color:var(--border)] bg-white py-1 text-center font-semibold"
+              className="w-14 rounded-md border border-[color:var(--card-border)] bg-white py-2 text-center text-base font-semibold"
             />
             <button
               type="button"
               onClick={() =>
                 setAttendees((n) => Math.min(maxAttendees, n + 1))
               }
-              className="h-9 w-9 rounded-full border border-[color:var(--border)] text-lg text-[color:var(--muted)] hover:bg-[color:var(--primary-soft)]"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--card-border)] text-2xl text-[color:var(--muted)] active:bg-[color:var(--primary-soft)]"
               aria-label="Increase attendees"
             >
               +
             </button>
           </div>
-        </label>
+        </div>
       )}
       {maxAttendees === 1 && (
         <input type="hidden" name="attendees" value={1} />
       )}
 
-      <label className="rounded-2xl border border-[color:var(--border)] bg-white/70 p-5">
-        <span className="text-sm text-[color:var(--foreground)]">
-          Anything you&apos;d like us to know? (optional)
-        </span>
-        <textarea
-          name="notes"
-          rows={3}
-          defaultValue={initialNotes ?? ""}
-          placeholder="Dietary needs, well-wishes, etc."
-          className="mt-2 w-full resize-none rounded-md border border-[color:var(--border)] bg-white p-3 text-sm outline-none focus:border-[color:var(--primary)]"
-        />
-      </label>
-
       {state && !state.ok && (
-        <p className="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+        <p className="rounded-md border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
           {state.error}
         </p>
       )}
 
       {showThankYou ? (
-        <div className="rounded-2xl border border-[color:var(--primary-soft)] bg-[color:var(--primary-soft)]/40 p-5 text-center">
-          <p className="font-display text-2xl text-[color:var(--primary)]">
-            {successStatus === "yes" ? "Yay! See you soon. 🥂" : "We'll miss you."}
+        <div className="rounded-2xl border border-[color:var(--primary)] bg-[color:var(--primary-soft)] p-5 text-center text-[color:var(--foreground)] shadow-sm">
+          <p className="font-display text-2xl">
+            {successStatus === "yes"
+              ? "Yay! See you soon. 🥂"
+              : "We'll miss you."}
           </p>
           <p className="mt-1 text-sm text-[color:var(--muted)]">
             Your RSVP has been recorded. You can update it any time from this
@@ -150,13 +136,13 @@ export function RsvpForm({
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-3">
         <SubmitButton choice="yes" />
         <SubmitButton choice="no" />
       </div>
 
       {initialStatus !== "pending" && !showThankYou && (
-        <p className="text-center text-xs text-[color:var(--muted)]">
+        <p className="text-center text-xs text-[color:var(--muted-on-bg)]">
           Previously responded:{" "}
           <span className="font-semibold uppercase">{initialStatus}</span>
           {initialStatus === "yes" && initialAttendees
