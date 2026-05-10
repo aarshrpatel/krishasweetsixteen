@@ -3,7 +3,9 @@
 import { useState } from "react";
 
 function buildInviteMessage(name: string, url: string) {
-  return `Hi ${name}! You're invited to Krisha's Sweet Sixteen 🥂\nPlease RSVP here: ${url}`;
+  const origin = new URL(url).origin;
+  const flyer = `${origin}/flyer.pdf`;
+  return `Hi ${name}! You're invited to Krisha's Sweet Sixteen 🥂\nInvitation: ${flyer}\nPlease RSVP here: ${url}`;
 }
 
 export function CopyInvite({ name, url }: { name: string; url: string }) {
