@@ -44,7 +44,14 @@ export default async function RsvpPage({
           <h1 className="font-display mt-2 text-3xl text-[color:var(--card)] sm:text-4xl">
             Krisha&apos;s Sweet Sixteen
           </h1>
-          <p className="mt-2 text-sm text-[color:var(--muted-on-bg)]">
+          <div className="mt-4 flex items-center justify-center gap-3 text-[color:var(--accent)]">
+            <span className="h-px w-8 bg-[color:var(--primary)]" />
+            <span className="font-display text-base italic">
+              August 8, 2026
+            </span>
+            <span className="h-px w-8 bg-[color:var(--primary)]" />
+          </div>
+          <p className="mt-3 text-sm text-[color:var(--muted-on-bg)]">
             Please let us know if you&apos;ll join the celebration.
           </p>
         </div>
