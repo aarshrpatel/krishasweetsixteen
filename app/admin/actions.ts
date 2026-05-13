@@ -39,6 +39,29 @@ export async function uploadFamiliesAction(
   return { uploaded: rows.length };
 }
 
+export async function addPersonAction(
+  _prev: { error?: string; added?: string } | null,
+  formData: FormData,
+) {
+  await requireAdmin();
+  const name = String(formData.get("name") ?? "").trim();
+  const people = Number(formData.get("people"));
+
+  if (!name) return { error: "Please enter a first name." };
+  if (!Number.isFinite(people) || people < 1) {
+    return { error: "Please enter how many people (1 or more)." };
+  }
+
+  await db.insert(families).values({
+    name,
+    maxAttendees: Math.floor(people),
+    rsvpToken: nanoid(12),
+  });
+
+  revalidatePath("/admin");
+  return { added: name };
+}
+
 export async function deleteFamilyAction(formData: FormData) {
   await requireAdmin();
   const id = Number(formData.get("id"));

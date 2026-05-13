@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { deleteFamilyAction, logoutAction } from "./actions";
 import { ClearAllButton } from "./ClearAllButton";
 import { UploadCard } from "./UploadCard";
+import { AddPersonCard } from "./AddPersonCard";
 import { CopyAllInvites, CopyInvite } from "./CopyLink";
 
 export const dynamic = "force-dynamic";
@@ -70,8 +71,9 @@ export default async function AdminPage() {
         <Stat label="Pending" value={totals.pending} />
       </section>
 
-      <div className="mt-8">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <UploadCard />
+        <AddPersonCard />
       </div>
 
       <section className="mt-8 rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card)] p-6 text-[color:var(--foreground)] shadow-sm">
